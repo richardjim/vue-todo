@@ -1,19 +1,36 @@
 <template>
     <div>
-        <div class="input-wrap">
-            <input type="text" placeholder="Enter Todo" v-model="todo" />
-            <button @click="createTodo()"><b>Create</b></button>
+        <div class="input-wrap" :class="{ 'input-err': todoState.invalid }">
+            <input type="text" placeholder="Enter Todo" v-model="todoState.todo" />
+            <Button @click="createTodo()" />
         </div>
-        <p>{{ todo }}</p>
+        <p v-if="todoState.invalid" class="err-msg">{{ todoState.errMsg }}</p>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-const todo = ref('');
+import { reactive } from 'vue';
+import Button from '../components/Button.vue'
 
+
+const todoState = reactive({
+    todo: "",
+    invalid: null,
+    errMsg: "",
+})
+
+const emit = defineEmits(['create-todo']);
 const createTodo = () => {
-    console.log(todo.value);
+    todoState.invalid = null
+    if (todoState.todo !== "") {
+        emit('create-todo', todoState.todo)
+        todoState.todo = "";
+        return
+    }
+    todoState.invalid = true;
+    todoState.errMsg = "Todo value cannot be empty"
+
+
 };
 </script>
 
