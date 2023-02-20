@@ -17,6 +17,9 @@ const createTodo = (todo) => {
 
 };
 
+const toggleEditTodo = (index) => {
+  todoList.value[index].isEditing = !todoList.value[index].isEditing;
+};
 </script>
 
 <template>
@@ -26,13 +29,13 @@ const createTodo = (todo) => {
     <ul class="todo-list">
       <li v-for="todo in todoList" :key="todo.id">
         <div class="todo">
-          <input type="checkbox" :checked="todo.isCompleted">
+          <input type="checkbox" v-if="todo.isEditing" :value="todo.todo" @edit-todo="toggleEditTodo">
           <span>{{ todo.todo }}</span>
-          <div class="todo-actions">
-            <Icon icon="ph:check-circle" color="#41b080" />
-            <Icon icon="ph:pencil-fill" color="#41b080" />
-            <Icon icon="ph:trash-fill" class="icon" color="#f95e5e" />
-          </div>
+        </div>
+        <div class="todo-actions">
+          <Icon icon="ph:check-circle" class="icon" color="#41b080" />
+          <Icon icon="ph:pencil-fill" @click="$emit('edit-todo', index)" class="icon" color="#41b080" />
+          <Icon icon="ph:trash-fill" class="icon" color="#f95e5e" />
         </div>
       </li>
     </ul>
@@ -47,47 +50,63 @@ main {
   width: 100%;
   margin: 0 auto;
   padding: 40px 16px;
+}
 
-  h1 {
-    margin-bottom: 16px;
-    text-align: center;
-  }
+li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 10px;
+  background-color: #f1f1f1;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
 
-  .todo-list {
-    display: flex;
-    flex-direction: column;
-    list-style: none;
-    margin-top: 24px;
-    gap: 20px;
-  }
-
-  .todos-msg {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 24px;
-  }
-
-  .todo {
-    flex: 1;
-
-    input[type="text"] {
-      width: 100%;
-      padding: 2px 6px;
-      border: 2px solid #41b080;
+  &:hover {
+    .todo-actions {
+      opacity: 1;
     }
   }
+}
 
-  .todo-actions {
-    display: flex;
-    gap: 6px;
-    opacity: 0;
-    transition: 150ms ease-in-out;
+h1 {
+  margin-bottom: 16px;
+  text-align: center;
+}
 
-    .icon {
-      cursor: pointer;
-    }
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin-top: 24px;
+  gap: 20px;
+}
+
+.todos-msg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.todo {
+  flex: 1;
+
+  input[type="text"] {
+    width: 100%;
+    padding: 2px 6px;
+    border: 2px solid #41b080;
+  }
+}
+
+.todo-actions {
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: 150ms ease-in-out;
+
+  .icon {
+    cursor: pointer;
   }
 }
 </style>
